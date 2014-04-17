@@ -1,0 +1,113 @@
+<html>
+  <head>test</head>
+  <style type="text/css">
+    #sidebar { width: 200px; height: 500px; background-color: #ccc; display: inline-block; }
+    #right-rail { border: 2px solid black; width: 300px; height: 200px; display: inline-block; }
+  </style>
+  <body>
+    <h1>Testttt</h1>
+    <div id="panel">
+      <input type="text" title="Master Hex" name="Master Hex"></input>
+    </div>
+
+    <div id="sidebar">
+      <p>Hey there this is the sidebar</p>
+    </div>
+
+    <div id="right-rail">
+      <p>Right rail paragraph</p>
+      <h2>Right rail header</h2>
+      <p class="selected">Right rail pararaph 2</p>
+    </div>
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script type="text/javascript">
+
+        function transformValue(value) {
+          //value = value + 'hey';
+          value = '#93333f'
+          return value;
+        };
+
+        function transformValueAgain(value) {
+          value = '#334f93'
+          return value;
+        }
+
+        var getPanelField = function(label) {
+          for (var i = 0; i < panelFields.length; i++) {
+            if (panelFields[i].label === label) {
+              return panelFields[i]
+            }
+          }
+        }
+
+        var hasHelper = function(obj) {
+            if (obj.hasOwnProperty('helper')) {
+               return true;
+            }
+        }
+
+        var panelFields = [{
+          label: 'Master Hex',
+          type: 'color',
+          elems: [
+            { selectors: '.selected, #sidebar', css_property: 'background-color', helper: transformValueAgain },
+            { selectors: '#right-rail', css_property: 'border-color' },
+            { selectors: 'h1, #right-rail p', css_property: 'color' }
+          ],
+          helper: transformValue
+        },
+        {
+          label: 'Font Palette',
+          type: 'string',
+          elems: [
+            { selectors: 'h1 p', css_property: 'font-family' }
+          ]
+        }];
+
+          var inputs = $('#panel').find('input');
+          inputs.each(function() {
+            $(this).blur(function() {
+              var $input = $(this),
+                title = $(this).attr('title'),
+                value = $(this).val(),
+                panelField = getPanelField(title);
+                // elements = getElements(panelField);
+
+                if (hasHelper(panelField)) {
+                  value = panelField.helper(value);
+                }
+
+
+              for (var i = 0; i < panelField.elems.length; i++) {
+                var setValue = value;
+                if (hasHelper(panelField.elems[i])) {
+                  setValue = panelField.elems[i].helper(setValue)
+                }
+                if (panelField.elems[i].hasOwnProperty('css_property')) {
+                  $(panelField.elems[i].selectors).css(panelField.elems[i].css_property, setValue);
+                }
+              }
+
+              // panelField.elements.each(function() {
+              //   // if ('helper' in this) {
+              //   //   get the params of the helper function
+              //   //   to apply the transformation to appropriate selectors
+              //   // }
+              //   if ('css_property' in this) {
+              //     $(this.selectors).css(this.css_property, value);
+              //   }
+                // else if ('helper' in this) {
+                //   var helperFn = this.helper
+                //   [helperFn](this.selectors);
+                // }
+              // })
+
+            })
+          })
+
+
+    </script>
+  </body>
+</html>
